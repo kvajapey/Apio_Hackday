@@ -15,11 +15,16 @@ public class Data {
 	ArrayList<Double> magnetX = new ArrayList<Double>();
 	ArrayList<Double> magnetY = new ArrayList<Double>();
 	ArrayList<Double> magnetZ = new ArrayList<Double>();
+	//arrays for the roll, pitch, and yaw
+	ArrayList<Double> roll = new ArrayList<Double>();
+	ArrayList<Double> pitch = new ArrayList<Double>();
+	ArrayList<Double> yaw = new ArrayList<Double>();
 	//an array for the actvity of each second
 	ArrayList<String> activity = new ArrayList<String>();
 	public Data(ArrayList<Double> newAccelX, ArrayList<Double> newAccelY, ArrayList<Double> newAccelZ,
 				ArrayList<Double> newGyroX, ArrayList<Double> newGyroY, ArrayList<Double> newGyroZ,
-				ArrayList<Double> newMagnetX, ArrayList<Double> newMagnetY, ArrayList<Double> newMagnetZ){
+				ArrayList<Double> newMagnetX, ArrayList<Double> newMagnetY, ArrayList<Double> newMagnetZ,
+				ArrayList<Double> newRoll, ArrayList<Double> newPitch, ArrayList<Double> newYaw){
 		accelX = newAccelX;	
 		accelY = newAccelY;
 		accelZ = newAccelZ;
@@ -29,6 +34,9 @@ public class Data {
 		magnetX = newMagnetX;
 		magnetY = newMagnetY;
 		magnetZ = newMagnetZ;
+		roll = newRoll;
+		pitch = newPitch;
+		yaw = newYaw;
 	}
 	public void setAccelerometerXData(ArrayList<Double> newAccelX){
 		accelX = newAccelX;
@@ -39,19 +47,67 @@ public class Data {
 	public void setAccelerometerZData(ArrayList<Double> newAccelZ){
 		accelZ = newAccelZ;
 	}
-	public void setGyroscopeData(ArrayList<Double> newGyro){
-		gyro = newGyro;
+	public void setGyroscopeXData(ArrayList<Double> newGyroX){
+		gyroX = newGyroX;
 	}
-	public void setMagnetometerData(ArrayList<Double> newMagnet){
-		magnet = newMagnet;
+	public void setGyroscopeYData(ArrayList<Double> newGyroY){
+		gyroY = newGyroY;
 	}
-	public ArrayList<Double> getAccelerometerData(){
-		return accel;
+	public void setGyroscopeZData(ArrayList<Double> newGyroZ){
+		gyroZ = newGyroZ;
 	}
-	public ArrayList<Double> getGyroscopeData(){
-		return gyro;
+	public void setMagnetometerXData(ArrayList<Double> newMagnetX){
+		magnetX = newMagnetX;
 	}
-	public ArrayList<Double> getMagnetometerData(){
-		return magnet;
+	public void setMagnetometerYData(ArrayList<Double> newMagnetY){
+		magnetY = newMagnetY;
+	}
+	public void setMagnetometerZData(ArrayList<Double> newMagnetZ){
+		magnetZ = newMagnetZ;
+	}
+	public void setRollData(ArrayList<Double> newRoll){
+		roll = newRoll;
+	}
+	public void setPitchData(ArrayList<Double> newPitch){
+		pitch = newPitch;
+	}
+	public void setYawData(ArrayList<Double> newYaw){
+		yaw = newYaw;
+	}
+	public ArrayList<Double> getAccelerometerXData(){
+		return accelX;
+	}
+	public ArrayList<Double> getAccelerometerYData(){
+		return accelY;
+	}
+	public ArrayList<Double> getAccelerometerZData(){
+		return accelZ;
+	}
+	public ArrayList<Double> getGyroscopeXData(){
+		return gyroX;
+	}
+	public ArrayList<Double> getGyroscopeYData(){
+		return gyroY;
+	}
+	public ArrayList<Double> getGyroscopeZData(){
+		return gyroZ;
+	}
+	public ArrayList<Double> getMagnetometerXData(){
+		return magnetX;
+	}
+	public ArrayList<Double> getMagnetometerYData(){
+		return magnetY;
+	}
+	public ArrayList<Double> getMagnetometerZData(){
+		return magnetZ;
+	}
+	public ArrayList<Double> getRollData(){
+		return roll;
+	}
+	public ArrayList<Double> getPitchData(){
+		return pitch;
+	}
+	public ArrayList<Double> getYawData(){
+		return yaw;
 	}
 }
