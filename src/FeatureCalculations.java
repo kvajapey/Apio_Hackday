@@ -2,6 +2,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 /**
  * Created with IntelliJ IDEA.
@@ -18,6 +19,7 @@ public class FeatureCalculations {
     public static final int numDirections = 3;
     //maximum frequency for FFT calculation
     public static final int maxFreq = 16;
+    //file name to pull raw data from
 
 
     public static void main(String args[]) throws IOException {
@@ -27,7 +29,16 @@ public class FeatureCalculations {
         * 0 - roll, 1 - pitch, 2 - yaw
         */
 
-        //Arraylists to store mean, variance, FFT
+        Scanner scan;
+        scan = new Scanner(System.in);
+
+        String fileName;
+
+        System.out.print("Please print the filename of input data: ");
+        fileName = scan.toString();
+
+
+        //Arraylists to store mean, variance, FFT for each type of sensor
         ArrayList<Double> meanAccelList[] = new ArrayList[numDirections];
         ArrayList<Double> meanGyroList[] = new ArrayList[numDirections];
         ArrayList<Double> meanMagnetList[] = new ArrayList[numDirections];
@@ -43,42 +54,76 @@ public class FeatureCalculations {
         ArrayList<Double> varMagnetList[] = new ArrayList[numDirections];
         ArrayList<Double> varRotateList[] = new ArrayList[numDirections];
 
-        ArrayList<Double> inAccelList[] = new ArrayList[numDirections];
-        ArrayList<Double> inGyroList[] = new ArrayList[numDirections];
-        ArrayList<Double> inMagnetList[] = new ArrayList[numDirections];
-        ArrayList<Double> inRotateList[] = new ArrayList[numDirections];
+        //Arraylists to get the input raw data (+1 for time arraylist for each sensor)
+        ArrayList<Double> inAccelList[] = new ArrayList[numDirections+1];
+        ArrayList<Double> inGyroList[] = new ArrayList[numDirections+1];
+        ArrayList<Double> inMagnetList[] = new ArrayList[numDirections+1];
+        ArrayList<Double> inRotateList[] = new ArrayList[numDirections+1];
 
+        //current window of data that is being processed
         ArrayList<Double> currAccelWindow = new ArrayList<Double>();
         ArrayList<Double> currGyroWindow = new ArrayList<Double>();
         ArrayList<Double> currMagnetWindow = new ArrayList<Double>();
         ArrayList<Double> currRotateWindow = new ArrayList<Double>();
 
-        //Data rawData = new Data();
+        ReadFile reader = new ReadFile();
+        Data rawData = (reader.readfile(fileName));
 
+        //set all the raw data from data file
+        inAccelList[0] = rawData.getAccelerometerXData();
+        inAccelList[1] = rawData.getAccelerometerYData();
+        inAccelList[2] = rawData.getAccelerometerZData();
+        inAccelList[3] = rawData.getAccelTime();
+
+
+        inGyroList[0] = rawData.getGyroscopeXData();
+        inGyroList[1] = rawData.getGyroscopeYData();
+        inGyroList[2] = rawData.getGyroscopeZData();
+        inGyroList[3] = rawData.getGyroTime();
+
+
+        inMagnetList[0] = rawData.getMagnetometerXData();
+        inMagnetList[1] = rawData.getMagnetometerYData();
+        inMagnetList[2] = rawData.getMagnetometerZData();
+        inMagnetList[3] = rawData.getMagnetTime();
+
+
+        inRotateList[0] = rawData.getRollData();
+        inRotateList[1] = rawData.getPitchData();
+        inRotateList[2] = rawData.getYawData();
+        inRotateList[3] = rawData.getRPYTime();
+
+
+        //length (number of entries) of each type of sensor data
         int accelLength = inAccelList[0].size();
         int gyroLength = inGyroList[0].size();
         int magentLength = inMagnetList[0].size();
         int rotateLength = inRotateList[0].size();
+        int timeLength = inAccelList[3].size();
 
 
         int i, j, k, n;
-        //need to get the means, FFT, and variances for each type of data
+        //for loop to go through x, y, z, directions for each sensor
         for(i = 0; i < numDirections; i++){
 
-            for(j = 0; j < accelLength; j++){
+            //go through the length of the accel data
+            for(j = 0; j < (accelLength - FPS); j++){
 
+                //get 32 frames at a time to process with a step size of 1 (overlapping windows)
                 for(k = 0; k < FPS; k++){
                     currAccelWindow.add(k, inAccelList[i].get(j+k));
                 }
                 meanAccelList[i].add(j, calcMean(currAccelWindow));
                 varAccelList[i].add(j, calcVariance(currAccelWindow, meanAccelList[i].get(j)));
+                //get the fourier transforms of maxFreq different frequencies
                 for(n = 0; n < maxFreq; n++){
                     fourierAccelList[i][n].add(j, goertzel(currAccelWindow, n+1, currAccelWindow.size()));
                 }
 
             }
 
-            for(j = 0; j < gyroLength; j++){
+            //go through length of gyro data
+            for(j = 0; j < (gyroLength - FPS); j++){
 
                 for(k = 0; k < FPS; k++){
                     currGyroWindow.add(k, inGyroList[i].get(j+k));
@@ -91,7 +136,7 @@ public class FeatureCalculations {
 
             }
 
-            for(j = 0; j < magentLength; j++){
+            for(j = 0; j < (magentLength - FPS); j++){
 
                 for(k = 0; k < FPS; k++){
                     currMagnetWindow.add(k, inMagnetList[i].get(j+k));
@@ -104,7 +149,7 @@ public class FeatureCalculations {
 
             }
 
-            for(j = 0; j < rotateLength; j++){
+            for(j = 0; j < (rotateLength - FPS); j++){
 
                 for(k = 0; k < FPS; k++){
                     currRotateWindow.add(k, inRotateList[i].get(j+k));
@@ -120,7 +165,53 @@ public class FeatureCalculations {
         FileWriter fstream = new FileWriter("classifier_in.csv");
         BufferedWriter wr = new BufferedWriter(fstream);
 
+        String output;
 
+        //print to CSV -> timestamp, meanaccelx, meangyrox, meanmagnetx, meanrotatex, varaccelx, vargyrox, varmagnetx, varrotatex,
+        // fourieracclx 1-16, fouriergyrox 1-16, fouriermagnetx 1-16, fourierrotatex 1-16,
+        //meanaccely, meangyroy, meanmagnety, meanrotatey, varaccely, vargyroy, varmagnety, varrotatey,
+        // fourieraccly 1-16, fouriergyroy 1-16, fouriermagnety 1-16, fourierrotatey 1-16,
+        //meanaccelz, meangyroz, meanmagnetz, meanrotatez, varaccelz, vargyroz, varmagnetz, varrotatez,
+        // fourieracclz 1-16, fouriergyroz 1-16, fouriermagnetz 1-16, fourierrotatez 1-16,
+
+        output = "TimeStamp, Mean Accel X, Mean Gyro X, Mean Magnet X, Mean Roll, Variance Accel X, Variance Gyro X," +
+                "Variance Magnet X, Variance Roll,";
+        for(i = 0; i < maxFreq; i++){
+            output += "FFT Accel X" + i + "," + "FFT Gyro X" + i + "," + "FFT Magnet X" + i + "," + "FFT Roll" + i + ",";
+        }
+
+        output += "Mean Accel Y, Mean Gyro Y, Mean Magnet Y, Mean Pitch, Variance Accel Y, Variance Gyro Y," +
+                "Variance Magnet Y, Variance Pitch,";
+        for(i = 0; i < maxFreq; i++){
+            output += "FFT Accel Y" + i + "," + "FFT Gyro Y" + i + "," + "FFT Magnet Y" + i + "," + "FFT Pitch" + i + ",";
+        }
+
+        output += "Mean Accel Z, Mean Gyro Z, Mean Magnet Z, Mean Yaw, Variance Accel Z, Variance Gyro Z," +
+                "Variance Magnet Z, Variance Yaw,";
+        for(i = 0; i < maxFreq; i++){
+            output += "FFT Accel Z" + i + "," + "FFT Gyro Z" + i + "," + "FFT Magnet Z" + i + "," + "FFT Yaw" + i + ",";
+        }
+
+        output += "classification\n";
+
+        wr.write(output);
+
+        for(i = 0; i < timeLength; i++){
+            output = "" + inAccelList[3].get(i);
+            for(j = 0; j < numDirections; j++){
+                output += "," + meanAccelList[j].get(i) + "," + meanGyroList[j].get(i) + "," + meanMagnetList[j].get(i) +
+                        "," + meanRotateList[j].get(i) + "," + varAccelList[j].get(i) + "," + varGyroList[j].get(i) +
+                        "," + varMagnetList[j].get(i) + "," + varRotateList[j].get(i) + ",";
+                for(k = 0; k < maxFreq; k++){
+                    output += fourierAccelList[j][k].get(i) + "," + fourierGyroList[j][k].get(i) + "," +
+                            fourierMagnetList[j][k].get(i) + "," + fourierRotateList[j][k].get(i) + ",";
+                }
+            }
+            output += "classification\n";
+            wr.write(output);
+        }
+
+        wr.close();
 
     }
 
