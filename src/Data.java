@@ -7,18 +7,26 @@ public class Data {
 	ArrayList<Double> accelX = new ArrayList<Double>();
 	ArrayList<Double> accelY = new ArrayList<Double>();
 	ArrayList<Double> accelZ = new ArrayList<Double>();
+	//an array for the times of the accel samples
+	ArrayList<Double> accelTime = new ArrayList<Double>();
 	//an array for the gyroscope samples
 	ArrayList<Double> gyroX = new ArrayList<Double>();
 	ArrayList<Double> gyroY = new ArrayList<Double>();
 	ArrayList<Double> gyroZ = new ArrayList<Double>();
+	//an array for the times of the gyro samples
+	ArrayList<Double> gyroTime = new ArrayList<Double>();
 	//an array for the magnetometer samples
 	ArrayList<Double> magnetX = new ArrayList<Double>();
 	ArrayList<Double> magnetY = new ArrayList<Double>();
 	ArrayList<Double> magnetZ = new ArrayList<Double>();
+	//an array for the times of the magnetometer samples
+	ArrayList<Double> magnetTime = new ArrayList<Double>();
 	//arrays for the roll, pitch, and yaw
 	ArrayList<Double> roll = new ArrayList<Double>();
 	ArrayList<Double> pitch = new ArrayList<Double>();
 	ArrayList<Double> yaw = new ArrayList<Double>();
+	//an array for the times of the roll pitch and yaw samples
+	ArrayList<Double> RPYTime = new ArrayList<Double>();
 	//accelerometer sampling rate
 	Double accelSR;
 	//gyroscope sampling rate
@@ -33,7 +41,9 @@ public class Data {
 				ArrayList<Double> newGyroX, ArrayList<Double> newGyroY, ArrayList<Double> newGyroZ,
 				ArrayList<Double> newMagnetX, ArrayList<Double> newMagnetY, ArrayList<Double> newMagnetZ,
 				ArrayList<Double> newRoll, ArrayList<Double> newPitch, ArrayList<Double> newYaw,
-				Double newAccelSR, Double newGyroSR, Double newMagnetSR, Double newRPYSR){
+				Double newAccelSR, Double newGyroSR, Double newMagnetSR, Double newRPYSR,
+				ArrayList<Double> newAccelTime, ArrayList<Double> newGyroTime, ArrayList<Double> newMagnetTime, 
+				ArrayList<Double> newRPYTime){
 		accelX = newAccelX;	
 		accelY = newAccelY;
 		accelZ = newAccelZ;
@@ -50,6 +60,10 @@ public class Data {
 		gyroSR = newGyroSR;
 		magnetSR = newMagnetSR;
 		RPYSR = newRPYSR;
+		accelTime = newAccelTime;
+		gyroTime = newGyroTime;
+		magnetTime = newMagnetTime;
+		RPYTime = newRPYTime;
 	}
 	public void setAccelerometerXData(ArrayList<Double> newAccelX){
 		accelX = newAccelX;
@@ -99,6 +113,18 @@ public class Data {
 	public void setRPYRate(Double newRPYSR){
 		RPYSR = newRPYSR;
 	}
+	public void setAccelTime(ArrayList<Double> newAccelTime){
+		accelTime = newAccelTime;
+	}
+	public void setGyroTime(ArrayList<Double> newGyroTime){
+		gyroTime = newGyroTime;
+	}
+	public void setMagnetTime(ArrayList<Double> newMagnetTime){
+		magnetTime = newMagnetTime;
+	}
+	public void setRPYTime(ArrayList<Double> newRPYTime){
+		RPYTime = newRPYTime;
+	}
 	public ArrayList<Double> getAccelerometerXData(){
 		return accelX;
 	}
@@ -146,5 +172,17 @@ public class Data {
 	}
 	public Double getRPYRate(){
 		return RPYSR;
+	}
+	public ArrayList<Double> getAccelTime(){
+		return accelTime;
+	}
+	public ArrayList<Double> getGyroTime(){
+		return gyroTime;
+	}
+	public ArrayList<Double> getMagnetTime(){
+		return magnetTime;
+	}
+	public ArrayList<Double> getRPYTime(){
+		return RPYTime;
 	}
 }
