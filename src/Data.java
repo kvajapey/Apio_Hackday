@@ -19,12 +19,21 @@ public class Data {
 	ArrayList<Double> roll = new ArrayList<Double>();
 	ArrayList<Double> pitch = new ArrayList<Double>();
 	ArrayList<Double> yaw = new ArrayList<Double>();
+	//accelerometer sampling rate
+	Double accelSR;
+	//gyroscope sampling rate
+	Double gyroSR;
+	//magnetometer sampling rate
+	Double magnetSR;
+	//roll pitch and yaw sampling rate
+	Double RPYSR;
 	//an array for the actvity of each second
 	ArrayList<String> activity = new ArrayList<String>();
 	public Data(ArrayList<Double> newAccelX, ArrayList<Double> newAccelY, ArrayList<Double> newAccelZ,
 				ArrayList<Double> newGyroX, ArrayList<Double> newGyroY, ArrayList<Double> newGyroZ,
 				ArrayList<Double> newMagnetX, ArrayList<Double> newMagnetY, ArrayList<Double> newMagnetZ,
-				ArrayList<Double> newRoll, ArrayList<Double> newPitch, ArrayList<Double> newYaw){
+				ArrayList<Double> newRoll, ArrayList<Double> newPitch, ArrayList<Double> newYaw,
+				Double newAccelSR, Double newGyroSR, Double newMagnetSR, Double newRPYSR){
 		accelX = newAccelX;	
 		accelY = newAccelY;
 		accelZ = newAccelZ;
@@ -37,6 +46,10 @@ public class Data {
 		roll = newRoll;
 		pitch = newPitch;
 		yaw = newYaw;
+		accelSR = newAccelSR;
+		gyroSR = newGyroSR;
+		magnetSR = newMagnetSR;
+		RPYSR = newRPYSR;
 	}
 	public void setAccelerometerXData(ArrayList<Double> newAccelX){
 		accelX = newAccelX;
@@ -74,6 +87,18 @@ public class Data {
 	public void setYawData(ArrayList<Double> newYaw){
 		yaw = newYaw;
 	}
+	public void setAccelRate(Double newAccelSR){
+		accelSR = newAccelSR;
+	}
+	public void setGyroRate(Double newGyroSR){
+		gyroSR = newGyroSR;
+	}
+	public void setMagnetRate(Double newMagnetSR){
+		magnetSR = newMagnetSR;
+	}
+	public void setRPYRate(Double newRPYSR){
+		RPYSR = newRPYSR;
+	}
 	public ArrayList<Double> getAccelerometerXData(){
 		return accelX;
 	}
@@ -109,5 +134,17 @@ public class Data {
 	}
 	public ArrayList<Double> getYawData(){
 		return yaw;
+	}
+	public Double getAccelRate(){
+		return accelSR;
+	}
+	public Double getGyroRate(){
+		return gyroSR;
+	}
+	public Double getMagnetRate(){
+		return magnetSR;
+	}
+	public Double getRPYRate(){
+		return RPYSR;
 	}
 }
