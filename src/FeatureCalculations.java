@@ -211,7 +211,7 @@ public class FeatureCalculations {
 
         }
 
-        FileWriter fstream = new FileWriter("classifier_in.csv");
+        FileWriter fstream = new FileWriter(fileName.substring(0, fileName.lastIndexOf('.')) + ".csv");
         BufferedWriter wr = new BufferedWriter(fstream);
 
         String output;
