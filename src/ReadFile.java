@@ -61,11 +61,11 @@ public class ReadFile {
 				}
 				else if(lineElems[1].equals("Config")){
 					//get sample rates
-					RPYSR = Double.valueOf(lineElems[4]);
-					magnetSR = Double.valueOf(lineElems[4]);
-					//magnetSR = Double.valueOf(lineElems[6]);
-					accelSR = Double.valueOf(lineElems[10]);
-					gyroSR = Double.valueOf(lineElems[12]);
+					RPYSR = Double.valueOf(lineElems[5]);
+					magnetSR = Double.valueOf(lineElems[5]);
+					//magnetSR = Double.valueOf(lineElems[7]);
+					accelSR = Double.valueOf(lineElems[11]);
+					gyroSR = Double.valueOf(lineElems[13]);
 				}
 				/*else if(lineElems[1].equals("CMDevMotMag")){
 					magnetX.add(Double.valueOf(lineElems[4]));
@@ -80,21 +80,21 @@ public class ReadFile {
 					gyroTime.add(getTime(lineElems[0]));
 				}*/
 				else if(lineElems[1].equals("CMDevMot")){
-					roll.add(Double.valueOf(lineElems[17]));
-					pitch.add(Double.valueOf(lineElems[18]));
-					yaw.add(Double.valueOf(lineElems[19]));
+					roll.add(Double.valueOf(lineElems[19]));
+					pitch.add(Double.valueOf(lineElems[20]));
+					yaw.add(Double.valueOf(lineElems[21]));
 					RPYTime.add(getTime(lineElems[0]) - startTime);
-					gyroX.add(Double.valueOf(lineElems[20]));
-					gyroY.add(Double.valueOf(lineElems[21]));
-					gyroZ.add(Double.valueOf(lineElems[22]));
+					gyroX.add(Double.valueOf(lineElems[22]));
+					gyroY.add(Double.valueOf(lineElems[23]));
+					gyroZ.add(Double.valueOf(lineElems[24]));
 					gyroTime.add(getTime(lineElems[0]) - startTime);
-					accelX.add(Double.valueOf(lineElems[26]));
-					accelY.add(Double.valueOf(lineElems[27]));
-					accelZ.add(Double.valueOf(lineElems[28]));
+					accelX.add(Double.valueOf(lineElems[28]));
+					accelY.add(Double.valueOf(lineElems[29]));
+					accelZ.add(Double.valueOf(lineElems[30]));
 					accelTime.add(getTime(lineElems[0]) - startTime);
-					accelX.add(Double.valueOf(lineElems[29]));
-					accelY.add(Double.valueOf(lineElems[30]));
-					accelZ.add(Double.valueOf(lineElems[31]));
+					magnetX.add(Double.valueOf(lineElems[31]));
+					magnetY.add(Double.valueOf(lineElems[32]));
+					magnetZ.add(Double.valueOf(lineElems[33]));
 					magnetTime.add(getTime(lineElems[0]) - startTime);
 				}
 				//read next line
