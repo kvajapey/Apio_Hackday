@@ -241,13 +241,13 @@ public class FeatureCalculations {
             for(j = 0; j < numDirections; j++){
                 output += "," + meanAccelList[j].get(i) + "," + meanGyroList[j].get(i) + "," + meanMagnetList[j].get(i) +
                         "," + meanRotateList[j].get(i) + "," + varAccelList[j].get(i) + "," + varGyroList[j].get(i) +
-                        "," + varMagnetList[j].get(i) + "," + varRotateList[j].get(i) + ",";
+                        "," + varMagnetList[j].get(i) + "," + varRotateList[j].get(i);
                 /*for(k = 0; k < maxFreq; k++){
                     output += fourierAccelList[j][k].get(i) + "," + fourierGyroList[j][k].get(i) + "," +
                             fourierMagnetList[j][k].get(i) + "," + fourierRotateList[j][k].get(i) + ",";
                 } */
             }
-            output += "classification\n";
+            output += ", classification\n";
             wr.write(output);
         }
 
