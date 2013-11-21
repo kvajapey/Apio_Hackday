@@ -113,9 +113,9 @@ public class ReadFile {
 		}
 		//return double value of timestamp in string format
 		private static Double getTime(String time){
-			return Double.valueOf(time.substring(8,9))*3600 + 		//Hours
-				   Double.valueOf(time.substring(10,11))*60 + 		//Minutes
-				   Double.valueOf(time.substring(12,13)) +	  		//Seconds
-				   Double.valueOf(time.substring(14,16))*0.001; 	//milliseconds
+			return Double.valueOf(time.substring(8,10))*3600 + 		//Hours
+				   Double.valueOf(time.substring(10,12))*60 + 		//Minutes
+				   Double.valueOf(time.substring(12,14)) +	  		//Seconds
+				   Double.valueOf(time.substring(14,17))*0.001; 	//milliseconds
 		}
 }

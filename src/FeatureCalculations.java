@@ -2,8 +2,6 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -35,9 +33,20 @@ public class FeatureCalculations {
         scan = new Scanner(System.in);
 
         String fileName;
+        double approach, entry, ignitionOn, ignitionOff, exit;
 
         System.out.print("Please print the filename of input data: ");
         fileName = scan.next();
+        System.out.print("Please print the approach time of input data (-1 for none): ");
+        approach = scan.nextDouble();
+        System.out.print("Please print the entry time of input data (-1 for none): ");
+        entry = scan.nextDouble();
+        System.out.print("Please print the ignition on time of input data (-1 for none): ");
+        ignitionOn = scan.nextDouble();
+        System.out.print("Please print the ignition off time of input data (-1 for none): ");
+        ignitionOff = scan.nextDouble();
+        System.out.print("Please print the exit time of input data (-1 for none): ");
+        exit = scan.nextDouble();
 
 
         //Arraylists to store mean, variance, FFT for each type of sensor
@@ -243,21 +252,41 @@ public class FeatureCalculations {
             for(j = 0; j < numDirections; j++){
                 output += "," + meanAccelList[j].get(i) + "," + meanGyroList[j].get(i) + "," + meanMagnetList[j].get(i) +
                         "," + meanRotateList[j].get(i) + "," + varAccelList[j].get(i) + "," + varGyroList[j].get(i) +
-<<<<<<< HEAD
-                        "," + varMagnetList[j].get(i) + "," + varRotateList[j].get(i) + ",";
-                for(k = 0; k < maxFreq; k++){
-                    output += fourierAccelList.get(j).get(k).get(i) + "," + fourierGyroList.get(j).get(k).get(i) + "," +
-                            fourierMagnetList.get(j).get(k).get(i) + "," + fourierRotateList.get(j).get(k).get(i) + ",";
-                } 
-=======
                         "," + varMagnetList[j].get(i) + "," + varRotateList[j].get(i);
-                /*for(k = 0; k < maxFreq; k++){
-                    output += fourierAccelList[j][k].get(i) + "," + fourierGyroList[j][k].get(i) + "," +
-                            fourierMagnetList[j][k].get(i) + "," + fourierRotateList[j][k].get(i) + ",";
-                } */
->>>>>>> 096dbe6e6d12ecbd9c371a581c9d7b48c132ce21
+                for(k = 0; k < maxFreq; k++){
+                    output += "," + fourierAccelList.get(j).get(k).get(i) + "," + fourierGyroList.get(j).get(k).get(i) + "," +
+                            fourierMagnetList.get(j).get(k).get(i) + "," + fourierRotateList.get(j).get(k).get(i);
+                } 
             }
-            output += ", classification\n";
+            if(inAccelList[3].get(i) > (approach - 1) && 
+            	inAccelList[3].get(i) < (approach + 1) && 
+            	approach != -1){
+            	output += ", approach\n";
+            }
+            else if(inAccelList[3].get(i) > (entry - 1) && 
+                	inAccelList[3].get(i) < (entry + 1) && 
+                	entry != -1){
+            	output += ", entry\n";
+            }
+            else if(inAccelList[3].get(i) > (ignitionOn - 1) && 
+                	inAccelList[3].get(i) < (ignitionOn + 1) && 
+                	ignitionOn != -1){
+            	output += ", ignition on\n";
+            }
+            else if(inAccelList[3].get(i) > (ignitionOff - 1) && 
+                	inAccelList[3].get(i) < (ignitionOff + 1) && 
+                	ignitionOff != -1){
+            	output += ", ignition off\n";
+            }
+            else if(inAccelList[3].get(i) > (exit - 1) && 
+                	inAccelList[3].get(i) < (exit + 1) && 
+                	exit != -1){
+            	output += ", exit\n";
+            }
+            else{
+            	output += ", none\n";
+            }
+            
             wr.write(output);
         }
 
