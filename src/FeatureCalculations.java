@@ -2,6 +2,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Scanner;
 
@@ -49,14 +50,10 @@ public class FeatureCalculations {
         ArrayList<Double> meanRotateList[];
         meanRotateList = new ArrayList[numDirections];
 
-        ArrayList<Double> fourierAccelList[][];
-        fourierAccelList = new ArrayList[numDirections][maxFreq];
-        ArrayList<Double> fourierGyroList[][];
-        fourierGyroList = new ArrayList[numDirections][maxFreq];
-        ArrayList<Double> fourierMagnetList[][];
-        fourierMagnetList = new ArrayList[numDirections][maxFreq];
-        ArrayList<Double> fourierRotateList[][];
-        fourierRotateList = new ArrayList[numDirections][maxFreq];
+        ArrayList<ArrayList<ArrayList<Double>>> fourierAccelList = new ArrayList<ArrayList<ArrayList<Double>>>();
+        ArrayList<ArrayList<ArrayList<Double>>> fourierGyroList = new ArrayList<ArrayList<ArrayList<Double>>>();
+        ArrayList<ArrayList<ArrayList<Double>>> fourierMagnetList = new ArrayList<ArrayList<ArrayList<Double>>>();
+        ArrayList<ArrayList<ArrayList<Double>>> fourierRotateList = new ArrayList<ArrayList<ArrayList<Double>>>();
 
         ArrayList<Double> varAccelList[];
         varAccelList = new ArrayList[numDirections];
@@ -117,7 +114,7 @@ public class FeatureCalculations {
         int gyroLength = inGyroList[0].size();
         int magnetLength = inMagnetList[0].size();
         int rotateLength = inRotateList[0].size();
-        //int timeLength = inRotateList[0].size();
+        int timeLength = inRotateList[0].size();
         //System.out.println(timeLength);
 
         int i, j, k, n;
@@ -131,6 +128,16 @@ public class FeatureCalculations {
             varGyroList[i] = new ArrayList<Double>();
             varMagnetList[i] = new ArrayList<Double>();
             varRotateList[i] = new ArrayList<Double>();
+            fourierAccelList.add(new ArrayList<ArrayList<Double>>());
+            fourierGyroList.add(new ArrayList<ArrayList<Double>>());
+            fourierMagnetList.add(new ArrayList<ArrayList<Double>>());
+            fourierRotateList.add(new ArrayList<ArrayList<Double>>());
+            for(n = 0; n < maxFreq; n++){
+            	fourierAccelList.get(i).add(new ArrayList<Double>());
+            	fourierGyroList.get(i).add(new ArrayList<Double>());
+            	fourierMagnetList.get(i).add(new ArrayList<Double>());
+            	fourierRotateList.get(i).add(new ArrayList<Double>());
+            }
             //go through the length of the accel data
             for(j = 0; j < (accelLength - FPS); j++){
 
@@ -141,14 +148,9 @@ public class FeatureCalculations {
                 meanAccelList[i].add(j, calcMean(currAccelWindow));
                 varAccelList[i].add(j, calcVariance(currAccelWindow, calcMean(currAccelWindow)));
                 //get the fourier transforms of maxFreq different frequencies
-                /*for(n = 0; n < maxFreq; n++){
-                    fourierAccelList[i] = new ArrayList[maxFreq];
-                    fourierAccelList[i][n] = new ArrayList<Double>();
-                    fourierGyroList[i][n] = new ArrayList<Double>();
-                    fourierMagnetList[i][n] = new ArrayList<Double>();
-                    fourierRotateList[i][n] = new ArrayList<Double>();
-                    fourierAccelList[i][n].add(j, goertzel(currAccelWindow, n+1, currAccelWindow.size()));
-                }   */
+                for(n = 0; n < maxFreq; n++){
+                    fourierAccelList.get(i).get(n).add(j, goertzel(currAccelWindow, n+1, currAccelWindow.size()));
+                }   
                 currAccelWindow.clear();
             }
             //System.out.println(meanAccelList[i].size());
@@ -162,9 +164,9 @@ public class FeatureCalculations {
                 }
                 meanGyroList[i].add(j, calcMean(currGyroWindow));
                 varGyroList[i].add(j, calcVariance(currGyroWindow, calcMean(currGyroWindow)));
-                /*for(n = 0; n < maxFreq; n++){
-                    fourierGyroList[i][n].add(j, goertzel(currGyroWindow, n+1, currGyroWindow.size()));
-                } */
+                for(n = 0; n < maxFreq; n++){
+                    fourierGyroList.get(i).get(n).add(j, goertzel(currGyroWindow, n+1, currGyroWindow.size()));
+                } 
                 currGyroWindow.clear();
             }
             //System.out.println(meanGyroList[i].size());
@@ -176,9 +178,9 @@ public class FeatureCalculations {
                 }
                 meanMagnetList[i].add(j, calcMean(currMagnetWindow));
                 varMagnetList[i].add(j, calcVariance(currMagnetWindow, calcMean(currMagnetWindow)));
-                /*for(n = 0; n < maxFreq; n++){
-                    fourierMagnetList[i][n].add(j, goertzel(currMagnetWindow, n+1, currMagnetWindow.size()));
-                }*/
+                for(n = 0; n < maxFreq; n++){
+                    fourierMagnetList.get(i).get(n).add(j, goertzel(currMagnetWindow, n+1, currMagnetWindow.size()));
+                }
                 currMagnetWindow.clear();
             }
             //System.out.println(meanMagnetList[i].size());
@@ -191,9 +193,9 @@ public class FeatureCalculations {
                 }
                 meanRotateList[i].add(j, calcMean(currRotateWindow));
                 varRotateList[i].add(j, calcVariance(currRotateWindow, calcMean(currRotateWindow)));
-                /*for(n = 0; n < maxFreq; n++){
-                    fourierRotateList[i][n].add(j, goertzel(currRotateWindow, n+1, currRotateWindow.size()));
-                } */
+                for(n = 0; n < maxFreq; n++){
+                    fourierRotateList.get(i).get(n).add(j, goertzel(currRotateWindow, n+1, currRotateWindow.size()));
+                } 
                 currRotateWindow.clear();
             }
             System.out.println(meanRotateList[i].size());
@@ -214,38 +216,38 @@ public class FeatureCalculations {
 
         output = "TimeStamp, Mean Accel X, Mean Gyro X, Mean Magnet X, Mean Roll, Variance Accel X, Variance Gyro X," +
                 "Variance Magnet X, Variance Roll,";
-        /*for(i = 0; i < maxFreq; i++){
+        for(i = 0; i < maxFreq; i++){
             output += "FFT Accel X" + i + "," + "FFT Gyro X" + i + "," + "FFT Magnet X" + i + "," + "FFT Roll" + i + ",";
-        } */
+        } 
 
         output += "Mean Accel Y, Mean Gyro Y, Mean Magnet Y, Mean Pitch, Variance Accel Y, Variance Gyro Y," +
                 "Variance Magnet Y, Variance Pitch,";
-        /*for(i = 0; i < maxFreq; i++){
+        for(i = 0; i < maxFreq; i++){
             output += "FFT Accel Y" + i + "," + "FFT Gyro Y" + i + "," + "FFT Magnet Y" + i + "," + "FFT Pitch" + i + ",";
-        } */
+        } 
 
         output += "Mean Accel Z, Mean Gyro Z, Mean Magnet Z, Mean Yaw, Variance Accel Z, Variance Gyro Z," +
                 "Variance Magnet Z, Variance Yaw,";
-        /*for(i = 0; i < maxFreq; i++){
+        for(i = 0; i < maxFreq; i++){
             output += "FFT Accel Z" + i + "," + "FFT Gyro Z" + i + "," + "FFT Magnet Z" + i + "," + "FFT Yaw" + i + ",";
-        }*/
+        }
 
         output += "classification\n";
 
         wr.write(output);
 
-        int timeLength = meanGyroList[0].size();
+        timeLength = meanGyroList[0].size();
 
-        for(i = 0; i < timeLength; i++){
+        for(i = 0; i < (timeLength); i++){
             output = "" + inAccelList[3].get(i);
             for(j = 0; j < numDirections; j++){
                 output += "," + meanAccelList[j].get(i) + "," + meanGyroList[j].get(i) + "," + meanMagnetList[j].get(i) +
                         "," + meanRotateList[j].get(i) + "," + varAccelList[j].get(i) + "," + varGyroList[j].get(i) +
                         "," + varMagnetList[j].get(i) + "," + varRotateList[j].get(i) + ",";
-                /*for(k = 0; k < maxFreq; k++){
-                    output += fourierAccelList[j][k].get(i) + "," + fourierGyroList[j][k].get(i) + "," +
-                            fourierMagnetList[j][k].get(i) + "," + fourierRotateList[j][k].get(i) + ",";
-                } */
+                for(k = 0; k < maxFreq; k++){
+                    output += fourierAccelList.get(j).get(k).get(i) + "," + fourierGyroList.get(j).get(k).get(i) + "," +
+                            fourierMagnetList.get(j).get(k).get(i) + "," + fourierRotateList.get(j).get(k).get(i) + ",";
+                } 
             }
             output += "classification\n";
             wr.write(output);
