@@ -152,6 +152,7 @@ public class FeatureCalculations {
                 currAccelWindow.clear();
             }
             //System.out.println(meanAccelList[i].size());
+            //this
 
             //go through length of gyro data
             for(j = 0; j < (gyroLength - FPS); j++){
